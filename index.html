@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Library Management System</h2>
+
+<!-- LOGIN -->
+<section id="loginPage" class="page" style="display:block;">
+    <h3>Login</h3>
+
+    <label>Name *</label>
+    <input type="text" id="loginName" placeholder="Enter Name">
+    <p id="errLoginName" class="error"></p>
+
+    <label>Password *</label>
+    <input type="password" id="loginPass" placeholder="Enter Password">
+    <p id="errLoginPass" class="error"></p>
+
+    <label>Role</label>
+    <select id="loginRole">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+    </select>
+
+    <button onclick="login()">Login</button>
+</section>
+
+
+<!-- MENU -->
+<section id="menuPage" class="page">
+    <h3 id="welcomeTitle"></h3>
+
+    <button onclick="switchPage('bookAvailable')">Book Available</button>
+    <button onclick="switchPage('bookIssue')">Book Issue</button>
+    <button onclick="switchPage('bookReturn')">Return Book</button>
+    <button onclick="switchPage('finePay')">Fine Pay</button>
+    <button onclick="switchPage('addMembership')">Add Membership</button>
+    <button onclick="switchPage('updateMembership')">Update Membership</button>
+
+    <div id="adminOnly">
+        <hr>
+        <p><b>Maintenance / Reports (Admin)</b></p>
+        <button onclick="switchPage('addBook')">Add Book</button>
+        <button onclick="switchPage('updateBook')">Update Book</button>
+        <button onclick="switchPage('userMgmt')">User Management</button>
+        <button onclick="openTransactions()">Payment Transactions</button>
+    </div>
+
+    <hr>
+    <button onclick="logout()">Logout</button>
+</section>
+
+
+<!-- BOOK AVAILABLE -->
+<section id="bookAvailable" class="page">
+    <h3>Book Available</h3>
+
+    <label>Book Name</label>
+    <input type="text" id="searchName" placeholder="Enter Book Name">
+
+    <label>Category</label>
+    <select id="searchCategory">
+        <option value="">-- Select Category --</option>
+        <option value="Programming">Programming</option>
+        <option value="Database">Database</option>
+        <option value="Networking">Networking</option>
+    </select>
+
+    <p id="errSearchMain" class="error"></p>
+
+    <button onclick="searchBooks()">Search</button>
+
+    <table id="searchResults" class="table"></table>
+</section>
+
+
+<!-- ISSUE BOOK -->
+<section id="bookIssue" class="page">
+    <h3>Book Issue</h3>
+    <p class="info">Select a book in Book Available first.</p>
+
+    <label>Book Name *</label>
+    <input type="text" id="issueBookName" readonly>
+    <p id="errIssueBook" class="error"></p>
+
+    <label>Author *</label>
+    <input type="text" id="issueAuthor" readonly>
+
+    <label>Issue Date *</label>
+    <input type="date" id="issueDate">
+    <p id="errIssueDate" class="error"></p>
+
+    <label>Return Date (max 15 days) *</label>
+    <input type="date" id="issueReturnDate">
+    <p id="errReturnDate" class="error"></p>
+
+    <label>Remarks</label>
+    <input type="text" id="issueRemarks">
+
+    <button onclick="confirmIssue()">Confirm Issue</button>
+    <p id="msgIssue" class="success"></p>
+</section>
+
+
+<!-- RETURN BOOK -->
+<section id="bookReturn" class="page">
+    <h3>Return Book</h3>
+
+    <label>Loan ID *</label>
+    <input type="number" id="retLoanId" placeholder="Last Issued Loan ID">
+    <p class="info">(For demo, use last issued loan id shown in alert)</p>
+
+    <label>Actual Return Date *</label>
+    <input type="date" id="retActualDate">
+    <p id="errRetActual" class="error"></p>
+
+    <button onclick="processReturn()">Proceed to Fine</button>
+    <p id="msgReturn" class="success"></p>
+</section>
+
+
+<!-- FINE PAY -->
+<section id="finePay" class="page">
+    <h3>Fine Pay</h3>
+
+    <label>Loan ID</label>
+    <input type="number" id="fineLoanId" readonly>
+
+    <label>Book Name</label>
+    <input type="text" id="fineBookName" readonly>
+
+    <label>Fine (₹)</label>
+    <input type="number" id="fineAmount" readonly>
+
+    <label>Book Price (₹, if paying for damage/loss)</label>
+    <input type="number" id="bookPrice" value="0">
+
+    <label>Total Amount (₹)</label>
+    <input type="number" id="totalAmount" readonly>
+
+    <label><input type="checkbox" id="finePaidChk"> Payment Received</label>
+
+    <p id="errFine" class="error"></p>
+
+    <button onclick="confirmFine()">Confirm Payment</button>
+    <p id="msgFine" class="success"></p>
+</section>
+
+
+<!-- ADD MEMBERSHIP -->
+<section id="addMembership" class="page">
+    <h3>Add Membership</h3>
+
+    <label>Member Name *</label>
+    <input type="text" id="memName">
+    <p id="errMemName" class="error"></p>
+
+    <label>Start Date *</label>
+    <input type="date" id="memStartDate">
+    <p id="errMemStart" class="error"></p>
+
+    <p>Duration *</p>
+    <label><input type="radio" name="memDur" value="6" checked> 6 Months</label>
+    <label><input type="radio" name="memDur" value="12"> 1 Year</label>
+    <label><input type="radio" name="memDur" value="24"> 2 Years</label>
+    <p id="errMemDur" class="error"></p>
+
+    <button onclick="addMembership()">Add Membership</button>
+    <p id="msgMemAdd" class="success"></p>
+</section>
+
+
+<!-- UPDATE MEMBERSHIP -->
+<section id="updateMembership" class="page">
+    <h3>Update Membership</h3>
+
+    <label>Membership No *</label>
+    <input type="text" id="updMemNo">
+    <p id="errUpdMemNo" class="error"></p>
+
+    <p>Action *</p>
+    <label><input type="radio" name="updAction" value="extend6" checked> Extend 6 Months</label>
+    <label><input type="radio" name="updAction" value="extend12"> Extend 1 Year</label>
+    <label><input type="radio" name="updAction" value="cancel"> Cancel</label>
+    <p id="errUpdAction" class="error"></p>
+
+    <button onclick="updateMembership()">Update</button>
+    <p id="msgMemUpd" class="success"></p>
+</section>
+
+
+<!-- ADD BOOK -->
+<section id="addBook" class="page">
+    <h3>Add Book</h3>
+
+    <label>Book Name *</label>
+    <input type="text" id="addBookName">
+    <p id="errAddBookName" class="error"></p>
+
+    <label>Author *</label>
+    <input type="text" id="addBookAuthor">
+    <p id="errAddBookAuthor" class="error"></p>
+
+    <label>Serial No *</label>
+    <input type="text" id="addBookSerial">
+    <p id="errAddBookSerial" class="error"></p>
+
+    <label>Category</label>
+    <input type="text" id="addBookCategory">
+
+    <label>Price (₹)</label>
+    <input type="number" id="addBookPrice" value="0">
+
+    <button onclick="addBook()">Save Book</button>
+    <p id="msgAddBook" class="success"></p>
+</section>
+
+
+<!-- UPDATE BOOK -->
+<section id="updateBook" class="page">
+    <h3>Update Book (by Serial)</h3>
+
+    <label>Serial No *</label>
+    <input type="text" id="updBookSerial">
+    <p id="errUpdBookSerial" class="error"></p>
+
+    <label>Book Name *</label>
+    <input type="text" id="updBookName">
+    <p id="errUpdBookName" class="error"></p>
+
+    <label>Author *</label>
+    <input type="text" id="updBookAuthor">
+    <p id="errUpdBookAuthor" class="error"></p>
+
+    <label>Category</label>
+    <input type="text" id="updBookCategory">
+
+    <label>Price (₹)</label>
+    <input type="number" id="updBookPrice" value="0">
+
+    <button onclick="updateBook()">Update Book</button>
+    <p id="msgUpdBook" class="success"></p>
+</section>
+
+
+<!-- USER MGMT -->
+<section id="userMgmt" class="page">
+    <h3>User Management</h3>
+
+    <label>Name *</label>
+    <input type="text" id="userMgmtName">
+    <p id="errUserName" class="error"></p>
+
+    <label>Password *</label>
+    <input type="password" id="userMgmtPass">
+    <p id="errUserPass" class="error"></p>
+
+    <label>Role</label>
+    <select id="userMgmtRole">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+    </select>
+
+    <button onclick="saveUser()">Create/Update User</button>
+    <p id="msgUserMgmt" class="success"></p>
+</section>
+
+
+<!-- TRANSACTIONS (Admin Report) -->
+<section id="transactions" class="page">
+    <h3>Payment Transactions</h3>
+    <table id="txTable" class="table"></table>
+</section>
+
+
+<script src="script.js"></script>
+</body>
+</html>
